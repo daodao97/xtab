@@ -1,0 +1,33 @@
+{
+    "manifest_version": 3,
+    "name": "xtabs",
+    "description": "tabs manager",
+    "version": "1.0.0",
+    "action": {
+        "default_popup": "pages/popup/index.html"
+    },
+    "chrome_url_overrides": {
+        "newtab": "pages/newtab/index.html"
+    },
+    "background": {
+        "service_worker": "src/background/index.ts"
+    },
+    "options_page": "pages/options/index.html",
+    "permissions": [
+        "tabs",
+        "tabGroups",
+        "storage",
+        "activeTab",
+        "bookmarks",
+        "sessions",
+        "scripting",
+        "clipboardRead"
+    ],
+    "optional_host_permissions": ["http://*/*", "https://*/*"],
+    "content_scripts": [
+        {
+            "matches": ["http://*/*", "https://*/*"],
+            "js": ["src/content/index.ts"]
+        }
+    ]
+}
