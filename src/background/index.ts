@@ -6,9 +6,10 @@ import { tabRecycleInit, tabRecycle, clearOnWindowCreate, clearOnWindowRemove, c
 let config: ConfigOptions = DefaultConfig;
 
 chrome.runtime.onInstalled.addListener(async () => {
-  chrome.tabs.create({
-    url: "chrome://newtab/"
-  })
+  // chrome.tabs.create({
+  //   url: "chrome://newtab/"
+  // })
+  chrome.runtime.openOptionsPage()
   config = await getConfig()
   if (config.auto_recycle_tab) {
     await tabRecycleInit()

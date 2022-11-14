@@ -2,7 +2,7 @@
    <el-config-provider :size="size" :z-index="zIndex">
     <main>
       <div>
-        <el-button @click="onclick">Options</el-button>
+        <el-button @click="onclick">配置xtab</el-button>
       </div>
     </main>
   </el-config-provider>
