@@ -24,7 +24,7 @@ export class GroupMap {
     }
 
     async add(windowId: number, groupName: string, tabId: number): Promise<void> {
-        await this.gid(windowId, groupName)
+        await this.gid(windowId, groupName, tabId)
         const data = await this.get()
         if (data[windowId] === undefined) {
             data[windowId] = {}
@@ -37,6 +37,8 @@ export class GroupMap {
             data[windowId][groupName].tabId.push(tabId)
         }
 
+        console.log(groupName, data[windowId][groupName].tabId.length )
+
         if (data[windowId][groupName].tabId.length == 2 && data[windowId][groupName].id == 0) {
             const groupId = await chrome.tabs.group({ tabIds: data[windowId][groupName].tabId })
             await chrome.tabGroups.update(groupId, { title: groupName || "Groups", collapsed: false })
@@ -47,9 +49,11 @@ export class GroupMap {
         }
 
         await this.set(data)
+
+        await this.clearGroup(windowId)
     }
 
-    async gid(windowId: number, groupName: string): Promise<number> {
+    async gid(windowId: number, groupName: string, tabId: number): Promise<number> {
         const data = await this.get()
         if (data[windowId] === undefined) {
             data[windowId] = {}
@@ -88,7 +92,20 @@ export class GroupMap {
                     continue
                 }
 
-                data[winId][name].tabId = glist.map(e => e.id!)
+                const realTabIds = glist.map(e => e.id!)
+                for (let k = 0; k < realTabIds.length; k++) {
+                    if (realTabIds[k] === tabId && name !== groupName) {
+                        delete realTabIds[k]
+                        await chrome.tabs.ungroup(tabId)
+                    }
+                }
+
+                if (realTabIds.length === 0) {
+                    delete data[winId][name]
+                    continue 
+                }
+
+                data[winId][name].tabId = realTabIds
             }
         }
 
@@ -101,6 +118,62 @@ export class GroupMap {
         const data = await this.get()
         delete data[windowId]
         await this.set(data)
+    }
+
+    async clearGroup(windowId: number): Promise<void> {
+        const data = await this.get()
+        const wins = await chrome.windows.getAll()
+        const ids: number[] = []
+        wins.forEach(item => {
+            ids.push(item.id!)
+        })
+
+        const winIds = Object.keys(data)
+        const tabs = await chrome.tabs.query({ windowId: windowId })
+        const tabIds = tabs.map(e => e.id)
+        for (let i = 0; i < winIds.length; i++) {
+            const winId = parseInt(winIds[i])
+            if (!ids.includes(winId)) {
+                delete data[winId]
+                continue
+            }
+
+            const groups = Object.keys(data[winId])
+            for (let j = 0; j < groups.length; j++) {
+                const name = groups[j]
+                data[winId][name].tabId = data[winId][name].tabId.filter(id => tabIds.includes(id))
+                if (data[winId][name].tabId.length === 0) {
+                    delete data[winId][name]
+                    continue
+                }
+                if (data[winId][name].id === 0 && data[winId][name].tabId.length == 1) {
+                    continue
+                }
+                const glist = await chrome.tabs.query({ groupId: data[winId][name].id })
+                if (glist.length === 0) {
+                    delete data[winId][name]
+                    continue
+                }
+
+                const realTabIds = glist.map(e => e.id!)
+
+                if (realTabIds.length === 0) {
+                    delete data[winId][name]
+                    continue 
+                }
+
+                if (realTabIds.length === 1 && data[winId][name].id !== 0) {
+                    await chrome.tabs.ungroup(realTabIds) 
+                    data[winId][name].id = 0
+                    continue 
+                }
+
+                data[winId][name].tabId = realTabIds
+            }
+        }
+
+        await this.set(data)
+
     }
 }
 
@@ -132,6 +205,20 @@ async function tabToGroup(name: string, tabId: number, windowId: number, group: 
 const gMap = new GroupMap('gmp_1')
 const gMap2 = new GroupMap('gmp_2')
 const gMap3 = new GroupMap('gmp_3')
+
+export async function tabUnGroup(config: ConfigOptions, tabId: number, windowId: number) {
+    switch (config.tab_group_mode) {
+        case 1:
+            gMap.clearGroup(windowId)
+            break;
+        case 2:
+            gMap2.clearGroup(windowId)
+            break;
+        case 3:
+            gMap3.clearGroup(windowId)
+            break;
+    }
+}
 
 export async function tabGroup(config: ConfigOptions, tab: Tab) {
     const url = new URL(tab.url!)

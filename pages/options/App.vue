@@ -45,6 +45,23 @@ const formOpts = {
       info: "如果当前窗口标签数超过该阈值, 则会回收最早的标签"
     },
     {
+      section: '相同地址只保留一个',
+      field: "just_one_tab",
+      label: "只留一个",
+      type: 'switch',
+      value: true,
+      info: "开启后, 相同url的标签将只保留一个"
+    },
+    {
+      field: "just_one_tab_exclude",
+      label: "排除",
+      depend: {
+        field: 'just_one_tab',
+        value: true
+      },
+      info: "请填写域名关键字, 多个用逗号分割, 配置后该域名将会排除只要一个的控制"
+    },
+    {
       section: '自动跳转',
       field: "auto_jump",
       label: "自动跳转",
@@ -155,17 +172,7 @@ const onsubmit = (data: any) => {
 
 <style lang="scss" scoped>
 .options-main {
-  padding: 20px;
+  margin: 20px;
   height: 100%;
-  background-size: 'cover';
-  background-repeat: 'no-repeat';
-  // width: 100%;
-  // height: 100vh;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 </style>

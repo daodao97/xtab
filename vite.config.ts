@@ -8,12 +8,13 @@ import windiConfig from './windi.config'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-import vueJsx from '@vitejs/plugin-vue-jsx';
+import vueJsx from '@vitejs/plugin-vue-jsx'
 
 const r = (...args: string[]) => resolve(__dirname, ...args)
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
+  delete manifest.chrome_url_overrides
   return {
     resolve: {
       alias: {
@@ -33,20 +34,34 @@ export default defineConfig(({ mode }) => {
       Components({
         resolvers: [ElementPlusResolver()],
       }),
+      // visualizer({
+      //   open: true,
+      //   gzipSize: true,
+      //   brotliSize: true
+      // })
     ],
     build: {
       sourcemap: false,
       rollupOptions: {
         input: {
-          newtab: r( 'pages/newtab/index.html'),
+          // newtab: r( 'pages/newtab/index.html'),
           popup: r('pages/popup/index.html'),
-          options: r('pages/options/index.html'),
+          // options: r('pages/options/index.html'),
           background: r('src/background/index.ts'),
           content: r('src/content/index.ts'),
         },
         output: {
-          entryFileNames: (info) => {
-            return 'assets/[name].[hash].js'
+          manualChunks: (id) => {
+            if (id.includes("node_modules")) {
+              const index = id.lastIndexOf("node_modules")
+              const tmp = id.substring(index).split("/")
+              const name = tmp[1]
+              if (name.startsWith("@")) {
+                return `${tmp[1]}_${tmp[2]}` 
+              } else {
+                return tmp[1]
+              }
+            }
           }
         }
       }

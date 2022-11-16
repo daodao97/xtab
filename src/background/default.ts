@@ -7,6 +7,8 @@ export interface TabGroupRule {
 export interface ConfigOptions {
     auto_recycle_tab: boolean;
     auto_recycle_max_tab_num: number;
+    just_one_tab: boolean;
+    just_one_tab_exclude: string;
     auto_jump: boolean;
     tab_group: boolean;
     tab_group_mode: number;
@@ -16,6 +18,8 @@ export interface ConfigOptions {
 export const DefaultConfig = {
     auto_recycle_tab: true,
     auto_recycle_max_tab_num: 20,
+    just_one_tab: true,
+    just_one_tab_exclude: "",
     auto_jump: true,
     tab_group: true,
     tab_group_mode: 1, // 1 按域名自动分组, 2 按一级域名自动分组, 3 按规则分组

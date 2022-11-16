@@ -10,3 +10,4 @@ auto-imports.d.ts
 components.d.ts
 *.zip
 *.crx
+stats.html
