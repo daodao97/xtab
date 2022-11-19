@@ -4,6 +4,7 @@
       <div>
         <el-button @click="onclick">配置xtab</el-button>
       </div>
+      <el-divider></el-divider>
       <el-tabs v-model="activeName" type="card" class="demo-tabs" @tab-click="handleClick">
         <el-tab-pane label="回收站" name="recycle">
           <TabList></TabList>

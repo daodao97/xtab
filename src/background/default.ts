@@ -11,6 +11,7 @@ export interface ConfigOptions {
     just_one_tab_exclude: string;
     auto_jump: boolean;
     tab_group: boolean;
+    tab_group_auto_collapsed_inactivity: boolean;
     tab_group_mode: number;
     tab_group_rules: TabGroupRule[];
 }
@@ -22,6 +23,7 @@ export const DefaultConfig = {
     just_one_tab_exclude: "",
     auto_jump: true,
     tab_group: true,
+    tab_group_auto_collapsed_inactivity: true,
     tab_group_mode: 1, // 1 按域名自动分组, 2 按一级域名自动分组, 3 按规则分组
     tab_group_rules: []
 }

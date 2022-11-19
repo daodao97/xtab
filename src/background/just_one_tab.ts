@@ -1,5 +1,5 @@
 
-import { Tab } from 'chrome'
+import type { Tab } from '@types/chrome'
 import { ConfigOptions } from './default'
 
 function matchExclude(url: string, keywords: string) {
@@ -22,9 +22,8 @@ export async function justOneTab(tab: Tab, config: ConfigOptions): Promise<void>
     if (matchExclude(tab.url!, config.just_one_tab_exclude)) {
         return
     }
-    const exist = await chrome.tabs.query({ url: tab.url.split('#')[0] })
-    const other = exist.filter(e => e.id !== tab.id)
-    console.log(tab.url, other)
+    let exist = await chrome.tabs.query({ windowId: tab.windowId })
+    const other =  exist.filter(e => e.url === tab.url).filter(e => e.id !== tab.id)
     if (other.length > 0) {
         other.forEach(async (item, index) => {
             if (index > 0) {

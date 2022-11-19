@@ -102,6 +102,16 @@ const formOpts = {
       }
     },
     {
+      field: "tab_group_auto_collapsed_inactivity",
+      label: "自动折叠",
+      type: 'switch',
+      info: "开启后, 自动折叠不活跃分组",
+      depend: {
+        field: 'tab_group',
+        value: true
+      }
+    },
+    {
       field: "tab_group_rules",
       label: "分组规则",
       type: 'sub-form',
