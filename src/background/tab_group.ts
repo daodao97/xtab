@@ -55,7 +55,7 @@ export async function tabGroup(config: ConfigOptions, tab: Tab): Promise<string>
             break;
     }
 
-    return name
+    return name || ''
 }
 
 const collapsedNotActiveGroup = async (windowId: number) => {
@@ -123,7 +123,7 @@ export class WindowGroupMap {
         await asyncForEach(theNewG, async (name, index) => {
             if (gmp[name].tabId.length > 1) {
                 const groupId = await chrome.tabs.group({ tabIds: gmp[name].tabId })
-                await chrome.tabGroups.update(groupId, { title: name || "Groups", collapsed: false })
+                await chrome.tabGroups.update(groupId, { title: name || "", collapsed: false })
                 gmp[name].groupId = groupId
             }
             if (gmp[name].tabId.length === 1) {

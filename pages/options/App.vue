@@ -143,6 +143,7 @@ const formOpts = {
             col: {
               span: 4
             },
+            // 'grey' | 'blue' | 'red' | 'yellow' | 'green' | 'pink' | 'purple' | 'cyan' | 'orange'
             options: [
               {
                 value: '',
@@ -151,7 +152,35 @@ const formOpts = {
               {
                 value: 'gray',
                 label: '灰色',
-              }
+              },
+              {
+                value: 'red',
+                label: '红色',
+              },
+              {
+                value: 'yellow',
+                label: '黄色',
+              },
+              {
+                value: 'green',
+                label: '绿色',
+              },
+              {
+                value: 'pink',
+                label: '粉色',
+              },
+              {
+                value: 'purple',
+                label: '紫色',
+              },
+              {
+                value: 'cyan',
+                label: '青色',
+              },
+              {
+                value: 'orange',
+                label: '橙色',
+              } 
             ]
           },
           {
