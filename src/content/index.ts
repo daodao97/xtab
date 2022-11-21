@@ -1,4 +1,4 @@
-function zhihu() {
+function normal() {
     const link = document.getElementsByTagName('a')
     for (let i = 0; i<link.length; i++) {
         const href = link[i].href
@@ -30,9 +30,7 @@ function juejin() {
     }
 }
 
-if (location.host === "zhuanlan.zhihu.com") {
-    zhihu()
-}
+normal()
 
 if (location.host === "weixin110.qq.com") {
     weixin()
