@@ -85,7 +85,11 @@ const formOpts = {
       options: [
         {
           value: 1,
-          label: "按域名自动分组"
+          label: "按域名自动分组(全域名)"
+        },
+        {
+          value: 4,
+          label: "按域名自动分组(二级域名)"
         },
         {
           value: 2,

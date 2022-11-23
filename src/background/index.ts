@@ -1,6 +1,5 @@
 // import { sendMessage, onMessage } from 'webext-bridge'
 import { getConfig, ConfigOptions, DefaultConfig } from './default'
-import { tabGroup, clearCache, tabUnGroup } from './tab_group'
 import { WindowGroupMap } from './tab_group'
 import { tabRecycleInit, tabRecycle, clearOnWindowCreate, clearOnWindowRemove, clearOnTabRemove } from './tab_recycle'
 import { justOneTab } from './just_one_tab'
@@ -23,6 +22,7 @@ chrome.tabs.onMoved.addListener(async (tabId, info) => {
 })
 
 chrome.tabs.onActivated.addListener(async (info) => {
+  console.log('onActivated', info)
   config = await getConfig()
   await winTabGroup.reGroup(config, info.windowId)
 })
@@ -40,6 +40,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   }
 
   if (config.tab_group && !tab.url?.startsWith("chrome")) {
+    console.log('onUpdated', changeInfo, tab)
     await winTabGroup.reGroup(config, tab.windowId)
   }
 
@@ -53,6 +54,7 @@ chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
   await clearOnTabRemove(tabId)
   removeInfo.windowId
   if (config.tab_group) {
+    console.log('onTabRemoved', removeInfo)
     await winTabGroup.reGroup(config, removeInfo.windowId)
   }
 })
@@ -61,6 +63,7 @@ chrome.tabs.onActivated.addListener(async (info) => {
 })
 
 chrome.windows.onRemoved.addListener(async (windowId) => {
+  console.log('onWindowRemoved', windowId)
   await clearOnWindowRemove(windowId)
   config = await getConfig()
   await winTabGroup.reGroup(config, windowId)

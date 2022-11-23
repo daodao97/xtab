@@ -26,17 +26,19 @@ export type windowGMP = Record<number, Record<string, GMP>>
 export async function tabGroup(config: ConfigOptions, tab: Tab): Promise<string> {
     const url = new URL(tab.url!)
     let name = ''
+    let parts = url.hostname.split(".").filter(e => e !== 'www') // www.a.com or a.b.com => [a] or [a, b]
+    parts = parts.slice(0, parts.length-1)
     switch (config.tab_group_mode) {
-        case 1:
-            const startIndex = url.hostname.startsWith("www") ? url.hostname.indexOf(".") + 1 : 0
-            const lastIndex = url.hostname.lastIndexOf(".")
-            name = url.hostname.substring(startIndex, lastIndex)
+        case 1: // 全域名
+            name = parts.join('.')
             break;
-        case 2:
-            const parts = url.hostname.split(".")
+        case 4: // 最末级域名
+            name = parts[0]
+            break;
+        case 2: // 一级域名
             name = parts[parts.length - 2]
             break;
-        case 3:
+        case 3: // 自定义
             for (let i = 0; i < Object.values(config.tab_group_rules).length; i++) {
                 const item = config.tab_group_rules[i]
                 const parts = item.url.split(",").map(e => e.trim())
@@ -54,6 +56,8 @@ export async function tabGroup(config: ConfigOptions, tab: Tab): Promise<string>
 
             break;
     }
+
+    console.log(url.hostname, parts, config.tab_group_mode)
 
     return name || ''
 }
