@@ -9,6 +9,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import visualizer from 'rollup-plugin-visualizer'
 
 const r = (...args: string[]) => resolve(__dirname, ...args)
 
@@ -34,11 +35,11 @@ export default defineConfig(({ mode }) => {
       Components({
         resolvers: [ElementPlusResolver()],
       }),
-      // visualizer({
-      //   open: true,
-      //   gzipSize: true,
-      //   brotliSize: true
-      // })
+      visualizer({
+        open: true,
+        gzipSize: true,
+        brotliSize: true
+      })
     ],
     build: {
       sourcemap: false,
