@@ -65,7 +65,7 @@ export async function tabGroup(config: ConfigOptions, tab: Tab): Promise<string>
 const collapsedNotActiveGroup = async (windowId: number) => {
     const activeTab = await chrome.tabs.query({ active: true, windowId })
     const activeGroupId = activeTab.filter(e => e.groupId).map(e => e.groupId)
-    const group = await chrome.tabGroups.query({})
+    const group = await chrome.tabGroups.query({windowId: windowId})
     const ids = group.map(({ id }) => id)
 
     asyncForEach(arrDiff(ids, activeGroupId), async id => {
